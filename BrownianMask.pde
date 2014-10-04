@@ -1,7 +1,7 @@
 /*
- * Brownian.pde
+ * BrownianMask.pde
  *
- * Copyright (c) 2011 Carlos Rodrigues <cefrodrigues@gmail.com>
+ * Copyright (c) 2014 Carlos Rodrigues <cefrodrigues@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@
  *
  * When you have your key, create a "kuler.properties" file
  * in the same folder as this sketch, containing the line:
- *      
+ *
  *    api-key=YOUR_API_KEY
  *
  * Do not use quotes in the key.
@@ -46,6 +46,7 @@ import colorLib.webServices.*;
 import processing.video.*;
 
 
+PImage mask;
 PImage canvas;
 Painting painting;
 Palette[] themes;
@@ -53,10 +54,11 @@ String kulerKey;
 
 
 void setup() {
-  // Do not use even numbers, strange things happen...
-  size(850, 350, JAVA2D);
+  mask = loadImage("worldmap.png");
+
+  size(mask.width, mask.height, JAVA2D);
   frameRate(24);
-  
+
   //glSync(true);
   //glSmooth(false);
 
@@ -71,8 +73,8 @@ void setup() {
 
   kulerKey = p.getProperty("api-key", "");
 
-  canvas = loadImage("paper.jpg");
-  painting = new Painting(getPalette());
+  canvas = loadImage("canvas.png");
+  painting = new Painting(mask, getPalette());
 }
 
 
@@ -83,7 +85,7 @@ void draw() {
   // the same dimensions as our frame, this way is much faster...
   background(p);
   blend(canvas, 0, 0, width, height, 0, 0, width, height, MULTIPLY);
-  
+
   if (frameCount % 100 == 0) {
     println(frameRate + " fps");
   }
@@ -93,9 +95,9 @@ void draw() {
 void keyReleased() {
   // Restart the painting...
   if (key == ' ') {
-    painting = new Painting(getPalette());
+    painting = new Painting(mask, getPalette());
   }
-  
+
   // Save a snapshot...
   if (key == 'c') {
     saveFrame("painting-" + frameCount + ".png");
@@ -106,10 +108,10 @@ void keyReleased() {
 color[] getPalette() {
   if (themes == null) {
     Kuler kuler = new Kuler(this);
-  
+
     kuler.setKey(kulerKey);
     kuler.setNumResults(20);
-  
+
     themes = kuler.getPopular();
   }
 
@@ -117,4 +119,4 @@ color[] getPalette() {
 }
 
 
-/* EOF - Brownian.pde */
+/* EOF - BrownianMask.pde */

@@ -24,23 +24,29 @@
 
 
 // The number of places from which particles originate...
-static final int NUM_SOURCES = 1;
+static final int NUM_SOURCES = 20;
 
 // The total number of particles...
 static final int NUM_PARTICLES = NUM_SOURCES * 8;
 
 // The scale of the particles (smaller number = larger particles)...
-static final float PARTICLE_SCALE = 100.0;
+static final float PARTICLE_SCALE = 500.0;
 
 
 class Painting {
   private PGraphics gfx;
   private Particle[] particles;
+  private PImage mask;
   private color[] palette;
   
   private float zoom;
   
-  Painting(color[] palette) {
+  Painting(PImage mask, color[] palette) {
+    assert(mask.width == width && mask.height == height);
+
+    this.mask = mask;
+    this.mask.loadPixels();
+
     this.palette = palette;
     
     this.gfx = createGraphics(width, height, JAVA2D);
@@ -50,18 +56,18 @@ class Painting {
 
     // Source points for the particles...
     for (int i = 0; i < NUM_SOURCES; i++) {
-      sx[i] = random(this.gfx.width/5.0, this.gfx.width - this.gfx.width/5.0);
-      sy[i] = random(this.gfx.height/5.0, this.gfx.height - this.gfx.height/5.0);
+      sx[i] = random(width/5.0, width - width/5.0);
+      sy[i] = random(height/5.0, height - height/5.0);
     }
   
     // Scale things according to the canvas size...
-    this.zoom = min(this.gfx.width, this.gfx.height) / PARTICLE_SCALE;
+    this.zoom = min(width, height) / PARTICLE_SCALE;
   
     this.particles = new Particle[NUM_PARTICLES];
     
     // Start the particles evenly over the available source points...
     for (int i = 0; i < NUM_PARTICLES; i++) {
-      this.particles[i] = new Particle(sx[i % sx.length], sy[i % sy.length], this.palette[round(random(0, this.palette.length - 1))], this.zoom);
+      this.particles[i] = new Particle(sx[i % sx.length], sy[i % sy.length], this.palette[round(random(0, this.palette.length - 2))], this.zoom);
     }
 
     // Initialize out private graphics context...  
@@ -78,9 +84,25 @@ class Painting {
     if (frameCount % 100 == 0) {
       this.gfx.noStroke();
       this.gfx.fill(255, 32);
-      this.gfx.ellipse(random(0, this.gfx.width), random(0, this.gfx.width), 400 * this.zoom, 400 * this.zoom);
+      this.gfx.ellipse(random(0, width), random(0, width), 400 * this.zoom, 400 * this.zoom);
     }
     
+    // Update particle positions...
+    for (Particle p : this.particles) {
+      p.update();
+
+      color mask_prev = this.mask.pixels[int(p.px) + int(p.py) * width];
+      color mask_curr = this.mask.pixels[int(p.x) + int(p.y) * width];
+
+      if (mask_curr != mask_prev) {
+        if (mask_curr < mask_prev) {
+          p.setColor(this.palette[this.palette.length - 1]);
+        } else {
+          p.setColor(this.palette[round(random(0, this.palette.length - 2))]);
+        }
+      }
+    }
+
     this.gfx.noStroke();
     
     // Draw a "smudge" when particles come close together...
@@ -100,7 +122,6 @@ class Painting {
     
     // Now draw the particles themselves...
     for (Particle p : this.particles) {
-      p.update();
       p.draw(this.gfx);
     }
 

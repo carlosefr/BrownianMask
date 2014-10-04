@@ -24,8 +24,13 @@
 
 
 class Particle {
+  // Current position...
   public float x;
   public float y;
+
+  // Previous position...
+  public float px;
+  public float py;
   
   public color c;
   
@@ -34,6 +39,9 @@ class Particle {
   Particle(float x, float y, color c, float zoom) {
     this.x = x;
     this.y = y;
+
+    this.px = x;
+    this.py = y;
     
     this.c = c;
     
@@ -41,14 +49,21 @@ class Particle {
     this.range = random(6 * zoom, 10 * zoom);
   }
   
+  void setColor(color c) {
+    this.c = c;
+  }
+
   void update() {
+    this.px = this.x;
+    this.py = this.y;
+
     // Wander around randomly...
     this.x += random(-this.range, this.range);
     this.y += random(-this.range, this.range);
   
     // But stay on screen...
-    this.x = constrain(this.x, 0, width);
-    this.y = constrain(this.y, 0, height);
+    this.x = constrain(this.x, 0, width - 1);
+    this.y = constrain(this.y, 0, height - 1);
   }
   
   void draw(PGraphics gfx) {
