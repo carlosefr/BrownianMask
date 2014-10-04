@@ -65,7 +65,7 @@ void setup() {
   Properties p = new Properties();
 
   try {
-    p.load(createReader("kuler.properties"));
+    p.load(createReader("data/kuler.properties"));
   } catch (IOException e) {
     e.printStackTrace();
     return;
