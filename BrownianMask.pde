@@ -54,9 +54,7 @@ String kulerKey;
 
 
 void setup() {
-  mask = loadImage("worldmap.png");
-
-  size(mask.width, mask.height, JAVA2D);
+  size(1024, 587, JAVA2D);
   frameRate(24);
 
   //glSync(true);
@@ -72,6 +70,9 @@ void setup() {
   }
 
   kulerKey = p.getProperty("api-key", "");
+
+  mask = loadImage("worldmap.png");
+  mask.resize(width, height);
 
   canvas = loadImage("canvas.png");
   painting = new Painting(mask, getPalette());
