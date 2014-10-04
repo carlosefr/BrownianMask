@@ -72,9 +72,8 @@ void setup() {
   kulerKey = p.getProperty("api-key", "");
 
   mask = loadImage("worldmap.png");
-  mask.resize(width, height);
-
   canvas = loadImage("canvas.png");
+
   painting = new Painting(mask, getPalette());
 }
 

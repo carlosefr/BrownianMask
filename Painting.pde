@@ -42,9 +42,11 @@ class Painting {
   private float zoom;
   
   Painting(PImage mask, color[] palette) {
-    assert(mask.width == width && mask.height == height);
+    assert palette.length >= 2 : "the palette needs to have at least two colors";
 
     this.mask = mask;
+    this.mask.resize(width, height);
+    this.mask.filter(THRESHOLD, 0.7);  // ...the mask image should already be close to pure black/white.
     this.mask.loadPixels();
 
     this.palette = palette;
@@ -65,9 +67,11 @@ class Painting {
   
     this.particles = new Particle[NUM_PARTICLES];
     
-    // Start the particles evenly over the available source points...
+    // The particle's start position does not influence their
+    // initial color, to make the mask image appear from chaos...
     for (int i = 0; i < NUM_PARTICLES; i++) {
-      this.particles[i] = new Particle(sx[i % sx.length], sy[i % sy.length], this.palette[round(random(0, this.palette.length - 2))], this.zoom);
+      // Start the particles evenly over the available source points...
+      this.particles[i] = new Particle(sx[i % sx.length], sy[i % sy.length], this.palette[round(random(0, this.palette.length - 1))], this.zoom);
     }
 
     // Initialize out private graphics context...  
@@ -87,19 +91,24 @@ class Painting {
       this.gfx.ellipse(random(0, width), random(0, width), 400 * this.zoom, 400 * this.zoom);
     }
     
-    // Update particle positions...
+    // Update particle positions and colors...
     for (Particle p : this.particles) {
       p.update();
 
-      color mask_prev = this.mask.pixels[int(p.px) + int(p.py) * width];
-      color mask_curr = this.mask.pixels[int(p.x) + int(p.y) * width];
+      color prevMaskColor = this.mask.pixels[int(p.px) + int(p.py) * width];
+      color currMaskColor = this.mask.pixels[int(p.x) + int(p.y) * width];
 
-      if (mask_curr != mask_prev) {
-        if (mask_curr < mask_prev) {
-          p.setColor(this.palette[this.palette.length - 1]);
-        } else {
-          p.setColor(this.palette[round(random(0, this.palette.length - 2))]);
-        }
+      if (currMaskColor == prevMaskColor) {
+        // Same color area, keep the particle's color...
+        continue;
+      }
+
+      if (currMaskColor < prevMaskColor) {
+        // Stepping into a black area...
+        p.setColor(this.palette[this.palette.length - 1]);
+      } else {
+        // Stepping into a white area...
+        p.setColor(this.palette[round(random(0, this.palette.length - 2))]);
       }
     }
 
