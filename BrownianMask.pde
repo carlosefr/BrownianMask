@@ -38,12 +38,8 @@
 
 import java.util.Properties;
 
-import processing.opengl.*;
-
 import colorLib.*;
 import colorLib.webServices.*;
-
-import processing.video.*;
 
 
 PImage mask;
