@@ -28,7 +28,7 @@
  *    https://kuler.adobe.com
  *
  * When you have your key, create a "kuler.properties" file
- * in the same folder as this sketch, containing the line:
+ * in the "data" folder of this sketch, containing the line:
  *
  *    api-key=YOUR_API_KEY
  *
