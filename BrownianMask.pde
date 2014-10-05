@@ -38,8 +38,14 @@
 
 import java.util.Properties;
 
+import processing.pdf.*;
+
 import colorLib.*;
 import colorLib.webServices.*;
+
+
+// Optionally produce a PDF for every painting...
+static final boolean PDF_OUTPUT = false;
 
 
 PImage mask;
@@ -70,7 +76,7 @@ void setup() {
   mask = loadImage("worldmap.png");
   canvas = loadImage("canvas.png");
 
-  painting = new Painting(mask, getPalette());
+  painting = new Painting(mask, getPalette(), PDF_OUTPUT);
 }
 
 
@@ -91,7 +97,8 @@ void draw() {
 void keyReleased() {
   // Restart the painting...
   if (key == ' ') {
-    painting = new Painting(mask, getPalette());
+    painting.dispose();  // ...write the PDF (if any).
+    painting = new Painting(mask, getPalette(), PDF_OUTPUT);
   }
 
   // Save a snapshot...
@@ -112,6 +119,12 @@ color[] getPalette() {
   }
 
   return themes[round(random(0, themes.length - 1))].getColors();
+}
+
+
+void dispose() {
+  // Ensure the PDF (if any) gets written on exit...
+  painting.dispose();
 }
 
 
