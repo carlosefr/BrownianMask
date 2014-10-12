@@ -47,6 +47,17 @@ import colorLib.webServices.*;
 // Optionally produce a PDF for every painting...
 static final boolean PDF_OUTPUT = false;
 
+// Output path for frame snapshots...
+static final String FRAME_TEMPLATE = String.format("snapshots-%d%02d%02d-%02d%02d%02d/########.png", year(), month(), day(), hour(), minute(), second());
+
+
+/*
+ * A PNG snapshot of each frame will be continuously dumped while recording is active.
+ * These can be composed later into a video with an "ffmpeg" command like the following:
+ *
+ *   ffmpeg -r 24 -f image2 -i 'snapshots-20141012-151745/%08d.png' -y video-20141012-151745.mp4
+ */
+boolean recording = false;
 
 PImage mask;
 PImage canvas;
@@ -54,7 +65,7 @@ Painting painting;
 Palette[] themes;
 String kulerKey;
 
-// The pallete can be forced, or obtained dinamically from Kuler...
+// The initial pallete can be forced, or obtained dinamically from Kuler...
 color[] palette /* = {#250222, #3f0b35, #c1a598, #f2e1d8, #100b0b} */;
 
 
@@ -65,17 +76,18 @@ void setup() {
   //glSync(true);
   //glSmooth(false);
 
+  Properties p = new Properties();
+
+  try {
+    p.load(createReader("data/kuler.properties"));
+  } catch (IOException e) {
+    e.printStackTrace();
+    return;
+  }
+
+  kulerKey = p.getProperty("api-key", "");
+
   if (palette == null) {
-    Properties p = new Properties();
-
-    try {
-      p.load(createReader("data/kuler.properties"));
-    } catch (IOException e) {
-      e.printStackTrace();
-      return;
-    }
-
-    kulerKey = p.getProperty("api-key", "");
     palette = getPalette();
   }
 
@@ -95,7 +107,11 @@ void draw() {
   blend(canvas, 0, 0, width, height, 0, 0, width, height, MULTIPLY);
 
   if (frameCount % 100 == 0) {
-    println(frameRate + " fps");
+    println(String.format("%.1f fps", frameRate));
+  }
+
+  if (recording) {
+    saveFrame(FRAME_TEMPLATE);
   }
 }
 
@@ -105,11 +121,19 @@ void keyReleased() {
   if (key == ' ') {
     painting.dispose();  // ...write the PDF (if any).
     painting = new Painting(mask, getPalette(), PDF_OUTPUT);
+    println("Restarted painting at frame " + frameCount + ".");
   }
 
   // Save a snapshot...
   if (key == 'c') {
-    save("painting-" + frameCount + ".png");
+    saveFrame(FRAME_TEMPLATE);
+    println("Captured snapshot at frame " + frameCount + ".");
+  }
+
+  // Toggle recording...
+  if (key == 'r') {
+    recording = !recording;
+    println((recording ? "Started" : "Stopped") + " recording at frame " + frameCount + ".");
   }
 }
 
