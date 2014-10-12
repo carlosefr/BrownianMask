@@ -50,6 +50,9 @@ static final boolean PDF_OUTPUT = false;
 // Output path for frame snapshots...
 static final String FRAME_TEMPLATE = String.format("snapshots-%d%02d%02d-%02d%02d%02d/########.png", year(), month(), day(), hour(), minute(), second());
 
+// The initial palette can be forced, or obtained dynamically from Kuler...
+static final color[] INITIAL_PALETTE = null /* {#250222, #3f0b35, #c1a598, #f2e1d8, #100b0b} */;
+
 
 /*
  * A PNG snapshot of each frame will be continuously dumped while recording is active.
@@ -64,9 +67,6 @@ PImage canvas;
 Painting painting;
 Palette[] themes;
 String kulerKey;
-
-// The initial palette can be forced, or obtained dynamically from Kuler...
-color[] palette /* = {#250222, #3f0b35, #c1a598, #f2e1d8, #100b0b} */;
 
 
 void setup() {
@@ -84,14 +84,10 @@ void setup() {
 
   kulerKey = p.getProperty("api-key", "");
 
-  if (palette == null) {
-    palette = getPalette();
-  }
-
   mask = loadImage("worldmap.png");
   canvas = loadImage("canvas.png");
 
-  painting = new Painting(mask, palette, PDF_OUTPUT);
+  painting = new Painting(mask, INITIAL_PALETTE != null ? INITIAL_PALETTE : getPalette(), PDF_OUTPUT);
 }
 
 
