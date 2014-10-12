@@ -72,6 +72,7 @@ class Painting {
       this.particles[i] = new Particle(sx[i % sx.length], sy[i % sy.length], this.palette[round(random(0, this.palette.length - 1))], this.zoom);
     }
 
+    // We'll draw to multiple graphics contexts simultaneously...
     this.gfx = new PGraphics[print ? 2 : 1];
     this.gfx[0] = createGraphics(width, height, JAVA2D);
 
@@ -88,24 +89,7 @@ class Painting {
     }
   }
 
-  PImage update() {
-    for (int g = 0; g < this.gfx.length; g++) {
-      this.gfx[g].beginDraw();
-    }
-
-    // Fade-out a random circular portion of the painting...
-    if (frameCount % 100 == 0) {
-      float x = random(0, width);
-      float y = random(0, height);
-      float diameter = 400 * this.zoom;
-
-      for (int g = 0; g < this.gfx.length; g++) {
-        this.gfx[g].noStroke();
-        this.gfx[g].fill(255, 32);
-        this.gfx[g].ellipse(x, y, diameter, diameter);
-      }
-    }
-
+  void update() {
     // Update particle positions and colors...
     for (Particle p : this.particles) {
       p.update();
@@ -124,6 +108,25 @@ class Painting {
       } else {
         // Stepping into a white area...
         p.setColor(this.palette[round(random(0, this.palette.length - 2))]);
+      }
+    }
+  }
+
+  PImage draw() {
+    for (int g = 0; g < this.gfx.length; g++) {
+      this.gfx[g].beginDraw();
+    }
+
+    // Fade-out a random circular portion of the painting...
+    if (frameCount % 100 == 0) {
+      float x = random(0, width);
+      float y = random(0, height);
+      float diameter = 400 * this.zoom;
+
+      for (int g = 0; g < this.gfx.length; g++) {
+        this.gfx[g].noStroke();
+        this.gfx[g].fill(255, 32);
+        this.gfx[g].ellipse(x, y, diameter, diameter);
       }
     }
 
@@ -164,8 +167,7 @@ class Painting {
       this.gfx[g].endDraw();
     }
 
-    // Return the bitmap for display...
-    return this.gfx[0];
+    return this.gfx[0];  // (bitmap context)
   }
 
   void dispose() {

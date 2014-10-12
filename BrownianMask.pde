@@ -54,6 +54,9 @@ Painting painting;
 Palette[] themes;
 String kulerKey;
 
+// The pallete can be forced, or obtained dinamically from Kuler...
+color[] palette /* = {#250222, #3f0b35, #c1a598, #f2e1d8, #100b0b} */;
+
 
 void setup() {
   size(1024, 587, JAVA2D);
@@ -62,30 +65,33 @@ void setup() {
   //glSync(true);
   //glSmooth(false);
 
-  Properties p = new Properties();
+  if (palette == null) {
+    Properties p = new Properties();
 
-  try {
-    p.load(createReader("data/kuler.properties"));
-  } catch (IOException e) {
-    e.printStackTrace();
-    return;
+    try {
+      p.load(createReader("data/kuler.properties"));
+    } catch (IOException e) {
+      e.printStackTrace();
+      return;
+    }
+
+    kulerKey = p.getProperty("api-key", "");
+    palette = getPalette();
   }
-
-  kulerKey = p.getProperty("api-key", "");
 
   mask = loadImage("worldmap.png");
   canvas = loadImage("canvas.png");
 
-  painting = new Painting(mask, getPalette(), PDF_OUTPUT);
+  painting = new Painting(mask, palette, PDF_OUTPUT);
 }
 
 
 void draw() {
-  PImage p = painting.update();
+  painting.update();
 
   // We cound draw the canvas first but, since the painting has
   // the same dimensions as our frame, this way is much faster...
-  background(p);
+  background(painting.draw());
   blend(canvas, 0, 0, width, height, 0, 0, width, height, MULTIPLY);
 
   if (frameCount % 100 == 0) {
@@ -103,7 +109,7 @@ void keyReleased() {
 
   // Save a snapshot...
   if (key == 'c') {
-    saveFrame("painting-" + frameCount + ".png");
+    save("painting-" + frameCount + ".png");
   }
 }
 
