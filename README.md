@@ -5,3 +5,5 @@ need the following:
 
   - http://processing.org
   - https://github.com/hellonico/colorlib (binary jar: [download](http://cloud.carlos-rodrigues.com/processing/colorLib.jar))
+
+You can watch a video for this here: https://www.youtube.com/watch?v=JjVtBkHGwFg
