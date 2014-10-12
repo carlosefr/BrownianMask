@@ -65,12 +65,12 @@ Painting painting;
 Palette[] themes;
 String kulerKey;
 
-// The initial pallete can be forced, or obtained dinamically from Kuler...
+// The initial palette can be forced, or obtained dynamically from Kuler...
 color[] palette /* = {#250222, #3f0b35, #c1a598, #f2e1d8, #100b0b} */;
 
 
 void setup() {
-  size(1024, 587, JAVA2D);
+  size(1024, 576, JAVA2D);
   frameRate(24);
 
   //glSync(true);
