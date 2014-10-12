@@ -7,3 +7,5 @@ need the following:
   - https://github.com/hellonico/colorlib (binary jar: [download](http://cloud.carlos-rodrigues.com/processing/colorLib.jar))
 
 You can watch a video for this here: https://www.youtube.com/watch?v=JjVtBkHGwFg
+
+![snapshot](http://cloud.carlos-rodrigues.com/processing/painting-914-small.png)
