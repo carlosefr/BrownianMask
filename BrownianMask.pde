@@ -73,9 +73,6 @@ void setup() {
   size(1024, 576, JAVA2D);
   frameRate(24);
 
-  //glSync(true);
-  //glSmooth(false);
-
   Properties p = new Properties();
 
   try {
