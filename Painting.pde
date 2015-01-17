@@ -149,7 +149,7 @@ class Painting {
           float diameter = distance/2.0;
 
           for (int g = 0; g < this.gfx.length; g++) {
-            this.gfx[g].fill(c, 16);
+            this.gfx[g].fill(c, 8);
             this.gfx[g].ellipse(x, y, diameter, diameter);
           }
         }
