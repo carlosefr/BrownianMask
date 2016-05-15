@@ -1,13 +1,15 @@
 A random walk of particles over a fixed canvas, with an hidden image mask influencing
-the behavior/appearance or the particles. The color scheme is chosen randomly from
-the 20 most popular palettes on [Kuler](https://kuler.adobe.com/). To run this you'll
-need the following:
+the behavior/appearance or the particles. The default color scheme is a simple grayscale
+but that can easily be changed in the source code.
 
-  - http://processing.org
-  - https://github.com/hellonico/colorlib (binary jar: [download](http://cloud.carlos-rodrigues.com/processing/colorLib.jar))
+![snapshot](https://raw.githubusercontent.com/carlosefr/BrownianMask/pjs_bw/painting-bw.png)
 
-You can watch a video for this here: https://www.youtube.com/watch?v=JjVtBkHGwFg
+If you have Python installed, you can quickly see it in action by running the following
+command inside the repository top folder and then browsing to `http://localhost:8000`:
+```
+$ python -m SimpleHTTPServer
+```
 
-![snapshot](http://cloud.carlos-rodrigues.com/processing/painting-914-small.png)
-
-While the application is running, pressing _space_ restarts the painting with new colors, pressing 'r' starts/stops recording and 'c' captures a snapshot.
+This is a simpler version of the sketch available in the
+[master branch](https://github.com/carlosefr/BrownianMask/tree/master),
+adapted for [processing.js](http://processingjs.org).
