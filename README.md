@@ -11,3 +11,6 @@ You can watch a video for this here: https://www.youtube.com/watch?v=JjVtBkHGwFg
 ![snapshot](http://cloud.carlos-rodrigues.com/processing/painting-914-small.png)
 
 While the application is running, pressing _space_ restarts the painting with new colors, pressing 'r' starts/stops recording and 'c' captures a snapshot.
+
+There's also a simpler version using [processing.js](http://processingjs.org) available
+in the [pjs_bw branch](https://github.com/carlosefr/BrownianMask/tree/pjs_bw).
